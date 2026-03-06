@@ -6,7 +6,17 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "@remotion/animated-emoji": "4.0.429",
+    "@remotion/captions": "4.0.429",
     "@remotion/cli": "4.0.429",
+    "@remotion/fonts": "4.0.429",
+    "@remotion/google-fonts": "4.0.429",
+    "@remotion/lottie": "4.0.429",
+    "@remotion/motion-blur": "4.0.429",
+    "@remotion/rounded-text-box": "4.0.429",
+    "@remotion/sfx": "4.0.429",
+    "@remotion/shapes": "4.0.429",
+    "@remotion/transitions": "4.0.429",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remotion": "4.0.429"
