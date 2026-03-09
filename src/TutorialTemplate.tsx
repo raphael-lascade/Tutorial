@@ -20,6 +20,12 @@ const TRANSITION = 15; // 0.5s transition frames
 const FPS = 30;
 const BG_COLOR = "#33a4fe";
 
+// ── Instagram Reels Safe Zone ──
+// Verified from TikTok/Instagram Reel Safety Zones reference (House of Marketers).
+// Top 250px, bottom 560px, left 90px, right 90px are overlay areas.
+// Content should stay within: y=[250..1360], x=[90..990]
+const SAFE = { top: 250, bottom: 560, left: 90, right: 90 };
+
 // ── Tutorial Configuration ──
 export interface TutorialConfig {
   // Durations (in frames at 30fps)
@@ -31,7 +37,7 @@ export interface TutorialConfig {
   hookAudio: string;
   mainAudio: string;
   screenRecording: string;
-  introVideo?: string; // optional — text-only intro if missing
+  introVideo?: string; // optional — text-only centered intro if missing
   outroVideo: string;
 
   // Screen recording timing
@@ -43,8 +49,8 @@ export interface TutorialConfig {
   highlights: HighlightConfig[];
 
   // Optional customization
-  hookTextTop?: number; // default: 140
-  hookFontSize?: number; // default: 72
+  hookTextTop?: number; // default: SAFE.top (250) when video present
+  hookFontSize?: number; // default: 56 with video, 90 without video
 }
 
 // ── Helper: compute total duration ──
@@ -52,11 +58,60 @@ export function getTutorialDuration(config: TutorialConfig): number {
   return config.introDuration + config.mainDuration + config.outroDuration;
 }
 
+// ── Shared: Hook Text ──
+const HookText: React.FC<{
+  words: { text: string; highlight: boolean }[];
+  fontSize: number;
+  style?: React.CSSProperties;
+}> = ({ words, fontSize, style }) => (
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 14,
+      ...style,
+    }}
+  >
+    {words.map((word, i) => (
+      <span
+        key={i}
+        style={{
+          fontFamily: "SFProRounded, sans-serif",
+          fontSize,
+          fontWeight: 700,
+          color: "#ffffff",
+          lineHeight: 1.3,
+          letterSpacing: -0.5,
+          ...(word.highlight
+            ? {
+                backgroundColor: "#22C55E",
+                borderRadius: 14,
+                paddingTop: 6,
+                paddingBottom: 6,
+                paddingLeft: 20,
+                paddingRight: 20,
+              }
+            : {}),
+        }}
+      >
+        {word.text}
+      </span>
+    ))}
+  </div>
+);
+
 // ── Part 1: Intro Screen ──
+// Two modes:
+//   A) With intro video: text at top (within safe zone) + smaller video below
+//      with white border and rounded corners (NO phone mockup)
+//   B) Without intro video: text centered on screen, larger font
 const IntroScreen: React.FC<{
   config: TutorialConfig;
 }> = ({ config }) => {
   const frame = useCurrentFrame();
+  const hasVideo = !!config.introVideo;
 
   const fadeIn = interpolate(frame, [0, TRANSITION], [0, 1], {
     extrapolateRight: "clamp",
@@ -69,56 +124,81 @@ const IntroScreen: React.FC<{
   );
   const opacity = fadeIn * fadeOut;
 
-  const textTop = config.hookTextTop ?? 140;
-  const fontSize = config.hookFontSize ?? 72;
+  if (hasVideo) {
+    // Mode A: Text at top (safe zone) + intro video below with white border
+    const textTop = config.hookTextTop ?? 320;
+    const fontSize = config.hookFontSize ?? 56;
+
+    return (
+      <AbsoluteFill style={{ backgroundColor: BG_COLOR, opacity }}>
+        {/* Hook text — within safe zone */}
+        <div
+          style={{
+            position: "absolute",
+            top: textTop,
+            left: SAFE.left,
+            right: SAFE.right,
+          }}
+        >
+          <HookText words={config.hookWords} fontSize={fontSize} />
+        </div>
+
+        {/* Intro video — smaller, white border, rounded corners */}
+        <div
+          style={{
+            position: "absolute",
+            top: 590,
+            left: 0,
+            right: 0,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              width: 500,
+              height: 667,
+              borderRadius: 24,
+              border: "5px solid white",
+              overflow: "hidden",
+              backgroundColor: "#000000",
+            }}
+          >
+            <OffthreadVideo
+              src={staticFile(config.introVideo!)}
+              playbackRate={1}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+          </div>
+        </div>
+      </AbsoluteFill>
+    );
+  }
+
+  // Mode B: No video — text centered, larger font
+  const fontSize = config.hookFontSize ?? 90;
 
   return (
     <AbsoluteFill style={{ backgroundColor: BG_COLOR, opacity }}>
-      {/* Hook text */}
       <div
         style={{
           position: "absolute",
-          top: textTop,
-          left: 50,
-          right: 50,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           display: "flex",
-          flexWrap: "wrap",
           justifyContent: "center",
           alignItems: "center",
-          gap: 14,
+          padding: 80,
         }}
       >
-        {config.hookWords.map((word, i) => (
-          <span
-            key={i}
-            style={{
-              fontFamily: "SFProRounded, sans-serif",
-              fontSize,
-              fontWeight: 700,
-              color: "#ffffff",
-              lineHeight: 1.3,
-              letterSpacing: -0.5,
-              ...(word.highlight
-                ? {
-                    backgroundColor: "#22C55E",
-                    borderRadius: 14,
-                    paddingTop: 6,
-                    paddingBottom: 6,
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                  }
-                : {}),
-            }}
-          >
-            {word.text}
-          </span>
-        ))}
+        <HookText words={config.hookWords} fontSize={fontSize} />
       </div>
-
-      {/* Phone mockup with intro video (if provided) */}
-      {config.introVideo && (
-        <PhoneWithVideo videoSrc={config.introVideo} playbackRate={1} />
-      )}
     </AbsoluteFill>
   );
 };
@@ -175,6 +255,7 @@ const MainContent: React.FC<{
 };
 
 // ── Part 3: Outro ──
+// Plays outro video as-is — no captions, no edits
 const OutroSection: React.FC<{
   outroVideo: string;
 }> = ({ outroVideo }) => {

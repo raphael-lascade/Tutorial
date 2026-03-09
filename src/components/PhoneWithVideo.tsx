@@ -1,35 +1,43 @@
 import { AbsoluteFill, Img, OffthreadVideo, staticFile } from "remotion";
 
-export const SCREEN = { left: 298, top: 418, width: 516, height: 1088 };
-export const SCREEN_RADIUS = 42;
+// Screen boundary verified via PIL alpha-channel pixel analysis.
+// PAD extends slightly beyond the transparent screen area so the phone
+// frame PNG (rendered on top) fully covers any edge imprecision.
+const PAD = 6;
+export const SCREEN = { left: 308, top: 462, width: 498, height: 1036 };
 export const MOCKUP_SRC = "Tutorial 1/iphone 12 pro mockup.png";
 
 export const PhoneWithVideo: React.FC<{
   videoSrc: string;
   playbackRate: number;
 }> = ({ videoSrc, playbackRate }) => {
+  const left = SCREEN.left - PAD;
+  const top = SCREEN.top - PAD;
+  const width = SCREEN.width + PAD * 2;
+  const height = SCREEN.height + PAD * 2;
+
   return (
     <AbsoluteFill>
+      {/* Black fill behind video — covers entire screen area */}
       <div
         style={{
           position: "absolute",
-          left: SCREEN.left,
-          top: SCREEN.top,
-          width: SCREEN.width,
-          height: SCREEN.height,
+          left,
+          top,
+          width,
+          height,
           backgroundColor: "#000000",
-          borderRadius: SCREEN_RADIUS,
         }}
       />
+      {/* Video — no borderRadius, phone mockup PNG handles corner clipping */}
       <div
         style={{
           position: "absolute",
-          left: SCREEN.left,
-          top: SCREEN.top,
-          width: SCREEN.width,
-          height: SCREEN.height,
+          left,
+          top,
+          width,
+          height,
           overflow: "hidden",
-          borderRadius: SCREEN_RADIUS,
         }}
       >
         <OffthreadVideo
@@ -39,7 +47,7 @@ export const PhoneWithVideo: React.FC<{
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            objectPosition: "center top",
+            objectPosition: "center center",
           }}
         />
       </div>

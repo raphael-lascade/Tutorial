@@ -5,6 +5,21 @@ dist
 out
 tmp-frames
 
+# Media files — never push to GitHub (large binaries, stay local only)
+public/**/*.mp4
+public/**/*.MP4
+public/**/*.mov
+public/**/*.MOV
+public/**/*.wav
+public/**/*.WAV
+public/**/*.mp3
+public/**/*.MP3
+public/**/*.png
+public/**/*.PNG
+public/**/*.webp
+public/**/*.jpg
+public/**/*.jpeg
+
 # AI tool config directories
 .agent/
 .agents/

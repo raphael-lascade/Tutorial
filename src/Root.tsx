@@ -4,6 +4,7 @@ import { CaptionsTemplate } from "./CaptionsTemplate";
 import { Tutorial1 } from "./Tutorial1";
 import { Tutorial2, TUTORIAL2_DURATION } from "./Tutorial2";
 import { Tutorial3, TUTORIAL3_DURATION } from "./Tutorial3";
+import { Tutorial4, TUTORIAL4_DURATION } from "./Tutorial4";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -42,6 +43,16 @@ export const RemotionRoot: React.FC = () => {
         id="Tutorial3"
         component={Tutorial3}
         durationInFrames={TUTORIAL3_DURATION}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+
+      {/* ── Tutorial 4: Export HD/4K, Save to Gallery, Share ── */}
+      <Composition
+        id="Tutorial4"
+        component={Tutorial4}
+        durationInFrames={TUTORIAL4_DURATION}
         fps={30}
         width={1080}
         height={1920}
