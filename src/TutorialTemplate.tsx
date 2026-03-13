@@ -48,9 +48,12 @@ export interface TutorialConfig {
   mainWords: CaptionWord[];
   highlights: HighlightConfig[];
 
-  // Optional customization
-  hookTextTop?: number; // default: SAFE.top (250) when video present
-  hookFontSize?: number; // default: 56 with video, 90 without video
+  // Optional customization (defaults from Figma file sTi5XMHnBXLoyYrROgTwuA)
+  hookTextTop?: number;      // default: 311
+  hookFontSize?: number;     // default: 101 with video, 90 without video
+  introVideoTop?: number;    // default: 804
+  introVideoWidth?: number;  // default: 402
+  introVideoHeight?: number; // default: 715
 }
 
 // ── Helper: compute total duration ──
@@ -125,9 +128,12 @@ const IntroScreen: React.FC<{
   const opacity = fadeIn * fadeOut;
 
   if (hasVideo) {
-    // Mode A: Text at top (safe zone) + intro video below with white border
-    const textTop = config.hookTextTop ?? 320;
-    const fontSize = config.hookFontSize ?? 56;
+    // Mode A: Text at top + intro video below (values from Figma)
+    const textTop = config.hookTextTop ?? 311;
+    const fontSize = config.hookFontSize ?? 101;
+    const videoTop = config.introVideoTop ?? 804;
+    const videoWidth = config.introVideoWidth ?? 402;
+    const videoHeight = config.introVideoHeight ?? 715;
 
     return (
       <AbsoluteFill style={{ backgroundColor: BG_COLOR, opacity }}>
@@ -143,37 +149,29 @@ const IntroScreen: React.FC<{
           <HookText words={config.hookWords} fontSize={fontSize} />
         </div>
 
-        {/* Intro video — smaller, white border, rounded corners */}
+        {/* Intro video — left-aligned at x=93 to match text (Figma spec) */}
         <div
           style={{
             position: "absolute",
-            top: 590,
-            left: 0,
-            right: 0,
-            display: "flex",
-            justifyContent: "center",
+            top: videoTop,
+            left: SAFE.left,
+            width: videoWidth,
+            height: videoHeight,
+            borderRadius: 24,
+            border: "5px solid white",
+            overflow: "hidden",
+            backgroundColor: "#000000",
           }}
         >
-          <div
+          <OffthreadVideo
+            src={staticFile(config.introVideo!)}
+            playbackRate={1}
             style={{
-              width: 500,
-              height: 667,
-              borderRadius: 24,
-              border: "5px solid white",
-              overflow: "hidden",
-              backgroundColor: "#000000",
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
             }}
-          >
-            <OffthreadVideo
-              src={staticFile(config.introVideo!)}
-              playbackRate={1}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
-          </div>
+          />
         </div>
       </AbsoluteFill>
     );
@@ -245,7 +243,7 @@ const MainContent: React.FC<{
           words={config.mainWords}
           highlightStyle="green-pill"
           backgroundType="blue"
-          fontSize={68}
+          fontSize={64}
           wordsPerLine={3}
           bottomOffset={1560}
         />
@@ -282,6 +280,22 @@ const OutroSection: React.FC<{
     </AbsoluteFill>
   );
 };
+
+// ── Standalone Part Compositions (for part-by-part approval workflow) ──
+export const TutorialPart1: React.FC<{ config: TutorialConfig }> = ({ config }) => (
+  <AbsoluteFill style={{ backgroundColor: BG_COLOR }}>
+    <Audio src={staticFile(config.hookAudio)} />
+    <IntroScreen config={config} />
+  </AbsoluteFill>
+);
+
+export const TutorialPart2: React.FC<{ config: TutorialConfig }> = ({ config }) => (
+  <MainContent config={config} />
+);
+
+export const TutorialPart3: React.FC<{ config: TutorialConfig }> = ({ config }) => (
+  <OutroSection outroVideo={config.outroVideo} />
+);
 
 // ── Main TutorialTemplate Composition ──
 export const TutorialTemplate: React.FC<{
