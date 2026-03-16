@@ -3,6 +3,8 @@ import { MyComposition } from "./Composition";
 import { CaptionsTemplate } from "./CaptionsTemplate";
 import { Tutorial5Part1, TUTORIAL5_PART1_DURATION, Tutorial5Part2, TUTORIAL5_PART2_DURATION, Tutorial5Part3, TUTORIAL5_PART3_DURATION, Tutorial5, TUTORIAL5_DURATION } from "./Tutorial5";
 import { Tutorial6Part1, TUTORIAL6_PART1_DURATION, Tutorial6Part2, TUTORIAL6_PART2_DURATION, Tutorial6Part3, TUTORIAL6_PART3_DURATION, Tutorial6, TUTORIAL6_DURATION } from "./Tutorial6";
+import { Tutorial7Part1, TUTORIAL7_PART1_DURATION, Tutorial7Part2, TUTORIAL7_PART2_DURATION, Tutorial7Part3, TUTORIAL7_PART3_DURATION, Tutorial7, TUTORIAL7_DURATION } from "./Tutorial7";
+import { Tutorial8Part1, TUTORIAL8_PART1_DURATION, Tutorial8Part2, TUTORIAL8_PART2_DURATION, Tutorial8Part3, TUTORIAL8_PART3_DURATION, Tutorial8, TUTORIAL8_DURATION } from "./Tutorial8";
 import { FigmaDemo, FIGMA_DEMO_DURATION } from "./FigmaDemo";
 import { MapCaptions, MAP_CAPTIONS_DURATION } from "./MapCaptions";
 
@@ -68,6 +70,12 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
       />
 
+      {/* ── Tutorial 8 ── */}
+      <Composition id="Tutorial8-Part1" component={Tutorial8Part1} durationInFrames={TUTORIAL8_PART1_DURATION} fps={30} width={1080} height={1920} />
+      <Composition id="Tutorial8-Part2" component={Tutorial8Part2} durationInFrames={TUTORIAL8_PART2_DURATION} fps={30} width={1080} height={1920} />
+      <Composition id="Tutorial8-Part3" component={Tutorial8Part3} durationInFrames={TUTORIAL8_PART3_DURATION} fps={30} width={1080} height={1920} />
+      <Composition id="Tutorial8" component={Tutorial8} durationInFrames={TUTORIAL8_DURATION} fps={30} width={1080} height={1920} />
+
       {/* ── Figma Layout Demo ── */}
       <Composition id="FigmaDemo" component={FigmaDemo} durationInFrames={FIGMA_DEMO_DURATION} fps={30} width={1080} height={1920} />
 
@@ -77,6 +85,12 @@ export const RemotionRoot: React.FC = () => {
       <Composition id="Tutorial6-Part2" component={Tutorial6Part2} durationInFrames={TUTORIAL6_PART2_DURATION} fps={30} width={1080} height={1920} />
       <Composition id="Tutorial6-Part3" component={Tutorial6Part3} durationInFrames={TUTORIAL6_PART3_DURATION} fps={30} width={1080} height={1920} />
       <Composition id="Tutorial6" component={Tutorial6} durationInFrames={TUTORIAL6_DURATION} fps={30} width={1080} height={1920} />
+
+      {/* ── Tutorial 7 ── */}
+      <Composition id="Tutorial7-Part1" component={Tutorial7Part1} durationInFrames={TUTORIAL7_PART1_DURATION} fps={30} width={1080} height={1920} />
+      <Composition id="Tutorial7-Part2" component={Tutorial7Part2} durationInFrames={TUTORIAL7_PART2_DURATION} fps={30} width={1080} height={1920} />
+      <Composition id="Tutorial7-Part3" component={Tutorial7Part3} durationInFrames={TUTORIAL7_PART3_DURATION} fps={30} width={1080} height={1920} />
+      <Composition id="Tutorial7" component={Tutorial7} durationInFrames={TUTORIAL7_DURATION} fps={30} width={1080} height={1920} />
 
       {/* ── TA Captions: Blue background ── */}
       <Composition

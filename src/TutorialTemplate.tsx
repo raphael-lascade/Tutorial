@@ -34,8 +34,8 @@ export interface TutorialConfig {
   outroDuration: number;
 
   // Asset paths (relative to public/)
-  hookAudio: string;
-  mainAudio: string;
+  hookAudio?: string;
+  mainAudio?: string;
   screenRecording: string;
   introVideo?: string; // optional — text-only centered intro if missing
   outroVideo: string;
@@ -49,11 +49,12 @@ export interface TutorialConfig {
   highlights: HighlightConfig[];
 
   // Optional customization (defaults from Figma file sTi5XMHnBXLoyYrROgTwuA)
-  hookTextTop?: number;      // default: 311
-  hookFontSize?: number;     // default: 101 with video, 90 without video
-  introVideoTop?: number;    // default: 804
-  introVideoWidth?: number;  // default: 402
-  introVideoHeight?: number; // default: 715
+  hookTextTop?: number;        // default: 311
+  hookFontSize?: number;       // default: 101 with video, 90 without video
+  introVideoTop?: number;      // default: 804
+  introVideoWidth?: number;    // default: 402
+  introVideoHeight?: number;   // default: 715
+  introVideoStartFrom?: number; // frames to skip at start of intro video (default: 0)
 }
 
 // ── Helper: compute total duration ──
@@ -134,6 +135,8 @@ const IntroScreen: React.FC<{
     const videoTop = config.introVideoTop ?? 804;
     const videoWidth = config.introVideoWidth ?? 402;
     const videoHeight = config.introVideoHeight ?? 715;
+    const videoLeft = Math.round((1080 - videoWidth) / 2);
+    const startFrom = config.introVideoStartFrom ?? 0;
 
     return (
       <AbsoluteFill style={{ backgroundColor: BG_COLOR, opacity }}>
@@ -149,12 +152,12 @@ const IntroScreen: React.FC<{
           <HookText words={config.hookWords} fontSize={fontSize} />
         </div>
 
-        {/* Intro video — left-aligned at x=93 to match text (Figma spec) */}
+        {/* Intro video — centered horizontally */}
         <div
           style={{
             position: "absolute",
             top: videoTop,
-            left: SAFE.left,
+            left: videoLeft,
             width: videoWidth,
             height: videoHeight,
             borderRadius: 24,
@@ -165,6 +168,7 @@ const IntroScreen: React.FC<{
         >
           <OffthreadVideo
             src={staticFile(config.introVideo!)}
+            startFrom={startFrom}
             playbackRate={1}
             style={{
               width: "100%",
@@ -230,7 +234,7 @@ const MainContent: React.FC<{
       }}
     >
       <AbsoluteFill style={{ backgroundColor: BG_COLOR }}>
-        <Audio src={staticFile(config.mainAudio)} />
+        {config.mainAudio ? <Audio src={staticFile(config.mainAudio)} /> : null}
 
         <PhoneWithVideo
           videoSrc={config.screenRecording}
@@ -284,7 +288,7 @@ const OutroSection: React.FC<{
 // ── Standalone Part Compositions (for part-by-part approval workflow) ──
 export const TutorialPart1: React.FC<{ config: TutorialConfig }> = ({ config }) => (
   <AbsoluteFill style={{ backgroundColor: BG_COLOR }}>
-    <Audio src={staticFile(config.hookAudio)} />
+    {config.hookAudio ? <Audio src={staticFile(config.hookAudio)} /> : null}
     <IntroScreen config={config} />
   </AbsoluteFill>
 );
@@ -305,7 +309,7 @@ export const TutorialTemplate: React.FC<{
     <AbsoluteFill style={{ backgroundColor: BG_COLOR }}>
       {/* Part 1: Intro */}
       <Sequence from={0} durationInFrames={config.introDuration}>
-        <Audio src={staticFile(config.hookAudio)} />
+        {config.hookAudio ? <Audio src={staticFile(config.hookAudio)} /> : null}
         <IntroScreen config={config} />
       </Sequence>
 
