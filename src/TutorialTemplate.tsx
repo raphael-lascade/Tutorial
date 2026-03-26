@@ -140,19 +140,7 @@ const IntroScreen: React.FC<{
 
     return (
       <AbsoluteFill style={{ backgroundColor: BG_COLOR, opacity }}>
-        {/* Hook text — within safe zone */}
-        <div
-          style={{
-            position: "absolute",
-            top: textTop,
-            left: SAFE.left,
-            right: SAFE.right,
-          }}
-        >
-          <HookText words={config.hookWords} fontSize={fontSize} />
-        </div>
-
-        {/* Intro video — centered horizontally */}
+        {/* Intro video — centered horizontally (rendered first, below text) */}
         <div
           style={{
             position: "absolute",
@@ -170,12 +158,25 @@ const IntroScreen: React.FC<{
             src={staticFile(config.introVideo!)}
             startFrom={startFrom}
             playbackRate={1}
+            muted
             style={{
               width: "100%",
               height: "100%",
               objectFit: "cover",
             }}
           />
+        </div>
+
+        {/* Hook text — rendered after video so it always appears on top */}
+        <div
+          style={{
+            position: "absolute",
+            top: textTop,
+            left: SAFE.left,
+            right: SAFE.right,
+          }}
+        >
+          <HookText words={config.hookWords} fontSize={fontSize} />
         </div>
       </AbsoluteFill>
     );

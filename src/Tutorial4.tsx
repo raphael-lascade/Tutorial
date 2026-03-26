@@ -1,0 +1,137 @@
+import { TutorialTemplate, getTutorialDuration, TutorialConfig } from "./TutorialTemplate";
+
+const CONFIG: TutorialConfig = {
+  // Durations
+  introDuration: 160, // 5.3s (hook voiceover 5.02s + intro video 5.3s)
+  mainDuration: 920, // ~30.7s (main voiceover is 29.72s + padding)
+  outroDuration: 76, // 2.53s
+
+  // Assets
+  hookAudio: "Tutorial/hook-voiceover.mp3",
+  mainAudio: "Tutorial/main-voiceover.mp3",
+  screenRecording: "Tutorial/Screen Recording Muted.MP4",
+  introVideo: "Tutorial/Intro.MP4",
+  outroVideo: "Tutorial/Outro.mp4",
+
+  // Screen recording timing
+  screenRecDurationSec: 49.0,
+
+  // Intro hook text (using template defaults: top=250, fontSize=56)
+  hookWords: [
+    { text: "How", highlight: false },
+    { text: "do", highlight: false },
+    { text: "I", highlight: false },
+    { text: "export", highlight: true },
+    { text: "my", highlight: false },
+    { text: "animation", highlight: false },
+    { text: "in", highlight: false },
+    { text: "HD/4K,", highlight: false },
+    { text: "then", highlight: false },
+    { text: "save", highlight: true },
+    { text: "to", highlight: false },
+    { text: "gallery,", highlight: false },
+    { text: "and", highlight: false },
+    { text: "share", highlight: true },
+    { text: "it?", highlight: false },
+  ],
+
+  // Highlights — none for now (need PIL verification for canvas coordinates)
+  highlights: [],
+
+  // Main voiceover word timings
+  mainWords: [
+    { text: "Once", startFrame: 0, endFrame: 7 },
+    { text: "your", startFrame: 8, endFrame: 12 },
+    { text: "route", startFrame: 14, endFrame: 20 },
+    { text: "is", startFrame: 21, endFrame: 24 },
+    { text: "ready,", startFrame: 26, endFrame: 38 },
+    { text: "tap", startFrame: 40, endFrame: 48 },
+    { text: "Preview", startFrame: 49, endFrame: 61 },
+    { text: "to", startFrame: 62, endFrame: 64 },
+    { text: "see", startFrame: 65, endFrame: 70 },
+    { text: "your", startFrame: 71, endFrame: 74 },
+    { text: "animation", startFrame: 76, endFrame: 89 },
+    { text: "in", startFrame: 91, endFrame: 93 },
+    { text: "action.", startFrame: 95, endFrame: 110 },
+    { text: "You'll", startFrame: 124, endFrame: 131 },
+    { text: "notice", startFrame: 132, endFrame: 142 },
+    { text: "the", startFrame: 143, endFrame: 146 },
+    { text: "HD", startFrame: 147, endFrame: 157 },
+    { text: "option", startFrame: 162, endFrame: 171 },
+    { text: "in", startFrame: 173, endFrame: 175 },
+    { text: "the", startFrame: 176, endFrame: 178 },
+    { text: "bottom", startFrame: 179, endFrame: 187 },
+    { text: "right", startFrame: 189, endFrame: 195 },
+    { text: "corner.", startFrame: 196, endFrame: 213 },
+    { text: "Tap", startFrame: 228, endFrame: 236 },
+    { text: "it", startFrame: 238, endFrame: 240 },
+    { text: "to", startFrame: 241, endFrame: 242 },
+    { text: "switch", startFrame: 244, endFrame: 252 },
+    { text: "to", startFrame: 254, endFrame: 256 },
+    { text: "4K", startFrame: 258, endFrame: 268 },
+    { text: "for", startFrame: 274, endFrame: 278 },
+    { text: "a", startFrame: 280, endFrame: 280 },
+    { text: "higher", startFrame: 282, endFrame: 289 },
+    { text: "quality", startFrame: 291, endFrame: 302 },
+    { text: "export.", startFrame: 304, endFrame: 324 },
+    { text: "When", startFrame: 339, endFrame: 345 },
+    { text: "you're", startFrame: 346, endFrame: 351 },
+    { text: "happy", startFrame: 352, endFrame: 358 },
+    { text: "with", startFrame: 360, endFrame: 363 },
+    { text: "the", startFrame: 364, endFrame: 366 },
+    { text: "preview,", startFrame: 368, endFrame: 386 },
+    { text: "tap", startFrame: 390, endFrame: 397 },
+    { text: "the", startFrame: 400, endFrame: 402 },
+    { text: "Export", startFrame: 404, endFrame: 415 },
+    { text: "button", startFrame: 417, endFrame: 425 },
+    { text: "at", startFrame: 427, endFrame: 429 },
+    { text: "the", startFrame: 431, endFrame: 433 },
+    { text: "top", startFrame: 434, endFrame: 440 },
+    { text: "right.", startFrame: 442, endFrame: 456 },
+    { text: "The", startFrame: 472, endFrame: 475 },
+    { text: "app", startFrame: 478, endFrame: 483 },
+    { text: "will", startFrame: 484, endFrame: 488 },
+    { text: "begin", startFrame: 490, endFrame: 496 },
+    { text: "exporting", startFrame: 498, endFrame: 513 },
+    { text: "your", startFrame: 514, endFrame: 518 },
+    { text: "video.", startFrame: 519, endFrame: 536 },
+    { text: "Once", startFrame: 544, endFrame: 553 },
+    { text: "it's", startFrame: 554, endFrame: 558 },
+    { text: "done,", startFrame: 560, endFrame: 572 },
+    { text: "your", startFrame: 575, endFrame: 580 },
+    { text: "animation", startFrame: 581, endFrame: 595 },
+    { text: "is", startFrame: 597, endFrame: 599 },
+    { text: "automatically", startFrame: 600, endFrame: 619 },
+    { text: "saved", startFrame: 621, endFrame: 631 },
+    { text: "to", startFrame: 631, endFrame: 633 },
+    { text: "your", startFrame: 635, endFrame: 638 },
+    { text: "gallery.", startFrame: 640, endFrame: 660 },
+    { text: "You'll", startFrame: 671, endFrame: 678 },
+    { text: "also", startFrame: 679, endFrame: 686 },
+    { text: "see", startFrame: 688, endFrame: 693 },
+    { text: "a", startFrame: 694, endFrame: 695 },
+    { text: "Share", startFrame: 697, endFrame: 705 },
+    { text: "button,", startFrame: 706, endFrame: 720 },
+    { text: "so", startFrame: 722, endFrame: 726 },
+    { text: "you", startFrame: 728, endFrame: 730 },
+    { text: "can", startFrame: 731, endFrame: 735 },
+    { text: "send", startFrame: 736, endFrame: 742 },
+    { text: "it", startFrame: 743, endFrame: 745 },
+    { text: "directly", startFrame: 746, endFrame: 759 },
+    { text: "to", startFrame: 761, endFrame: 762 },
+    { text: "Instagram,", startFrame: 765, endFrame: 784 },
+    { text: "TikTok,", startFrame: 786, endFrame: 804 },
+    { text: "or", startFrame: 805, endFrame: 809 },
+    { text: "anywhere", startFrame: 811, endFrame: 820 },
+    { text: "you'd", startFrame: 821, endFrame: 826 },
+    { text: "like.", startFrame: 827, endFrame: 840 },
+    { text: "That's", startFrame: 859, endFrame: 868 },
+    { text: "it!", startFrame: 870, endFrame: 892 },
+  ],
+};
+
+export const TUTORIAL4_DURATION = getTutorialDuration(CONFIG);
+
+export const Tutorial4: React.FC = () => {
+  return <TutorialTemplate config={CONFIG} />;
+};
